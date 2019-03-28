@@ -16,7 +16,8 @@
     <NeutralLanguage />
     <Company>Szogun Usługi Informatyczne</Company>
     <Authors>Wojciech Gomoła</Authors>
-    <PackageId>MediatR ASP.Net Core MVC</PackageId>
+    <PackageId>MediatR.AspNetCoreMvc.Helpers</PackageId>
+    <Product>MediatR ASP.Net Core MVC</Product>
   </PropertyGroup>
 
   <ItemGroup>
