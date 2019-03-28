@@ -12,17 +12,12 @@ namespace MediatR.AspNetCoreMvc.Helpers
         {
             _mediator = mediator;
         }
-
-        public Task<IActionResult> Send<TRequest>(TRequest request, CancellationToken token = default(CancellationToken)) where TRequest : IRequest
+        
+        public Task<IActionResult> Send<TResponse>(
+            IRequest<TResponse> request,
+            CancellationToken token = default(CancellationToken))
         {
-            return _mediator.Send<TRequest>(request, token);
-        }
-
-        public Task<IActionResult> Send<TRequest, TResult>(
-            TRequest request,
-            CancellationToken token = default(CancellationToken)) where TRequest : IRequest<TResult>
-        {
-            return _mediator.Send<TRequest, TResult>(request, token);
+            return this.Send(_mediator, request, token);
         }
     }
 }

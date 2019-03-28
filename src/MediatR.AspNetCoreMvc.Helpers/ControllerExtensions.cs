@@ -6,19 +6,19 @@ namespace MediatR.AspNetCoreMvc.Helpers
 {
     public static class ControllerExtensions
     {
-        public static async Task<IActionResult> Send<TRequest>(this IMediator mediator, TRequest request, CancellationToken token = default(CancellationToken)) where TRequest : IRequest
-        {
-            await mediator.Send(request, token);
-            return new OkResult();
-        }
-
-        public static async Task<IActionResult> Send<TRequest, TResult>(
-            this IMediator mediator, 
-            TRequest request,
-            CancellationToken token = default(CancellationToken)) where TRequest : IRequest<TResult>
+        public static async Task<IActionResult> Send<TResponse>(
+            this Controller controller,
+            IMediator mediator, 
+            IRequest<TResponse> request,
+            CancellationToken token = default(CancellationToken))
         {
             var result = await mediator.Send(request, token);
-            return new OkObjectResult(result);
+            if (typeof(TResponse) == typeof(Unit))
+            {
+                return controller.Ok();
+                ;
+            }
+            return controller.Json(result);
         }
     }
 }
