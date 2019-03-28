@@ -14,6 +14,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>MediatR ASP.Net Core Mvc</PackageTags>
     <NeutralLanguage />
+    <Company>Szogun Usługi Informatyczne</Company>
+    <Authors>Wojciech Gomoła</Authors>
+    <PackageId>MediatR ASP.Net Core MVC</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
