@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediatR.AspNetCoreMvc.Helpers", "MediatR.AspNetCoreMvc.Helpers\MediatR.AspNetCoreMvc.Helpers.csproj", "{839F7DC1-F310-45C3-87B0-46F62056B50D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{839F7DC1-F310-45C3-87B0-46F62056B50D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{839F7DC1-F310-45C3-87B0-46F62056B50D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{839F7DC1-F310-45C3-87B0-46F62056B50D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{839F7DC1-F310-45C3-87B0-46F62056B50D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {68B118B9-F4BC-477D-A11B-ED7DE7E9E9DE}
+	EndGlobalSection
+EndGlobal
