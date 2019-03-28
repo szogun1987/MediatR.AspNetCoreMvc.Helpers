@@ -1,0 +1,33 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- script: |
+    chmod +x ./bump-version.sh
+    export VERSION=$(cat version | ./bump-version.sh)
+    echo $VERSION > version
+    git add version
+    git commit -m "[skip ci]"
+    git push
+    git tag releases/$VERSION
+    git push origin releases/$version
+  displayName: 'Bump version'
+  
+- script: |
+    export VERSION=$(cat version)
+    cd src
+    dotnet build --configuration $(buildConfiguration) -p:Version=$VERSION-alpha -p:AssemblyVersion=$VERSION.0 -p:FileVersion=$VERSION.0
+    cd MediatR.AspNetCoreMvc.Helpers/bin/$(buildConfiguration)
+    dotnet nuget push MediatR.AspNetCoreMvc.Helpers.$VERSION-alpha.nupkg -k oy2pbom7a6hvnnegpcwqvs4g2pzsdz4utgwsv4ae3ljcoi -s https://api.nuget.org/v3/index.json
+  displayName: 'dotnet build and publish $(buildConfiguration)'
