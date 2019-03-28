@@ -7,6 +7,13 @@
     <FileVersion>0.0.1.0</FileVersion>
     <Version>0.0.0-alpha</Version>
     <Description>The super simple set of extensions methods, easing integration of MediatR library with ASP.Net MVC Core</Description>
+    <PackageIconUrl>https://raw.githubusercontent.com/szogun1987/MediatR.AspNetCoreMvc.Helpers/master/assets/logo.png</PackageIconUrl>
+    <PackageLicenseUrl>https://github.com/szogun1987/MediatR.AspNetCoreMvc.Helpers/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/szogun1987/MediatR.AspNetCoreMvc.Helpers</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>MediatR ASP.Net Core Mvc</PackageTags>
+    <NeutralLanguage />
   </PropertyGroup>
 
   <ItemGroup>
