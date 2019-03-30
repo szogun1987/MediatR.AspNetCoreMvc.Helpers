@@ -13,6 +13,10 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- checkout: self
+  persistCredentials: true
+  clean: true
+
 - script: |
     chmod +x ./bump-version.sh
     export VERSION=$(cat version | ./bump-version.sh)
@@ -24,7 +28,7 @@ steps:
     git commit -m "[skip ci]"
     git push
     git tag releases/$VERSION
-    git push origin releases/$version
+    git push origin releases/$VERSION
   displayName: 'Bump version'
   
 - script: |
