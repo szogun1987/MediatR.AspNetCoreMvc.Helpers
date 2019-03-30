@@ -17,6 +17,7 @@ steps:
     chmod +x ./bump-version.sh
     export VERSION=$(cat version | ./bump-version.sh)
     echo $VERSION > version
+    git checkout $BUILD_SOURCEBRANCHNAME
     git config --global user.email "azure-pipeline@szogun-ui.pl"
     git config --global user.name "Azure pipeline"
     git add version
