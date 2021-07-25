@@ -16,7 +16,6 @@ namespace MediatR.AspNetCoreMvc.Helpers
             if (typeof(TResponse) == typeof(Unit))
             {
                 return controller.Ok();
-                ;
             }
             return controller.Json(result);
         }
