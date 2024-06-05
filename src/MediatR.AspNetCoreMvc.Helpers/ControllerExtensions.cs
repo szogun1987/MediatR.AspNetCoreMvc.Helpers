@@ -19,4 +19,14 @@ public static class ControllerExtensions
         }
         return controller.Json(result);
     }
+    
+    public static async Task<IActionResult> Send(
+        this Controller controller,
+        IMediator mediator, 
+        IRequest request,
+        CancellationToken token = default)
+    {
+        await mediator.Send(request, token);
+        return controller.Ok();
+    }
 }

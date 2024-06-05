@@ -19,4 +19,11 @@ public class MediatRController : Controller
     {
         return this.Send(_mediator, request, token);
     }
+    
+    public Task<IActionResult> Send(
+        IRequest request,
+        CancellationToken token = default)
+    {
+        return this.Send(_mediator, request, token);
+    }
 }
