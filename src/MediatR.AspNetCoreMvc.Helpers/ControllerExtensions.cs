@@ -7,7 +7,7 @@ namespace MediatR.AspNetCoreMvc.Helpers;
 public static class ControllerExtensions
 {
     public static async Task<IActionResult> Send<TResponse>(
-        this Controller controller,
+        this ControllerBase controller,
         IMediator mediator, 
         IRequest<TResponse> request,
         CancellationToken token = default)
@@ -17,11 +17,11 @@ public static class ControllerExtensions
         {
             return controller.Ok();
         }
-        return controller.Json(result);
+        return controller.Ok(result);
     }
     
     public static async Task<IActionResult> Send(
-        this Controller controller,
+        this ControllerBase controller,
         IMediator mediator, 
         IRequest request,
         CancellationToken token = default)

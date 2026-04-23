@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MediatR.AspNetCoreMvc.Helpers;
 
-public class MediatRController : Controller
+public class MediatRController : ControllerBase
 {
     private readonly IMediator _mediator;
 
