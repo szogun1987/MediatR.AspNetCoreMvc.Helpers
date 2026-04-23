@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'Ubuntu-20.04'
+  vmImage: 'ubuntu-latest'
 
 variables:
   buildConfiguration: 'Release'
@@ -19,23 +19,49 @@ steps:
 
 - script: |
     chmod +x ./bump-version.sh
-    export VERSION=$(cat version | ./bump-version.sh)
-    echo $VERSION > version
+    VERSION=$(cat version | ./bump-version.sh)
+    echo "$VERSION" > version
     git config --global user.email "azure-pipeline@szogun-ui.pl"
     git config --global user.name "Azure pipeline"
     git add version
     git commit -m "[skip ci]"
     git push
-    git tag releases/$VERSION
-    git push origin releases/$VERSION
+    git tag "releases/$VERSION"
+    git push origin "releases/$VERSION"
+    echo "##vso[task.setvariable variable=packageVersion]${VERSION}-alpha"
   displayName: 'Bump version'
-  
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: 'build'
+    projects: 'src/**/*.csproj'
+    arguments: >-
+      --configuration $(buildConfiguration)
+      -p:Version=$(packageVersion)
+      -p:AssemblyVersion=$(packageVersion).0
+      -p:FileVersion=$(packageVersion).0
+      -p:GeneratePackageOnBuild=false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pack'
+  inputs:
+    command: 'pack'
+    packagesToPack: 'src/**/*.csproj'
+    nobuild: true
+    versioningScheme: 'off'
+    packDirectory: '$(Build.ArtifactStagingDirectory)'
+    arguments: '-p:PackageVersion=$(packageVersion)'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish nupkg artifact'
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifact: 'nupkg'
+
 - script: |
-    export VERSION=$(cat version)
-    cd src
-    dotnet build --configuration $(buildConfiguration) -p:Version=$VERSION-alpha -p:AssemblyVersion=$VERSION.0 -p:FileVersion=$VERSION.0
-    cd MediatR.AspNetCoreMvc.Helpers/bin/$(buildConfiguration)
-    dotnet nuget push MediatR.AspNetCoreMvc.Helpers.$VERSION-alpha.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
-  env:
-    NUGET_API_KEY: $(nuget.apiKey)
-  displayName: 'dotnet build and publish $(buildConfiguration)'
+    dotnet nuget push "$(Build.ArtifactStagingDirectory)/*.nupkg" \
+      --api-key $(nuget.apiKey) \
+      --source https://api.nuget.org/v3/index.json \
+      --skip-duplicate
+  displayName: 'Push to NuGet.org'
