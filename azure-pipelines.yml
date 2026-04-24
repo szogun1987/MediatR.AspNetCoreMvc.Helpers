@@ -1,21 +1,24 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
 - master
+
+pr: none
 
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
   buildConfiguration: 'Release'
+  dotnetVersion: '8.x'
 
 steps:
 - checkout: self
   persistCredentials: true
   clean: true
+
+- task: UseDotNet@2
+  displayName: 'Install .NET $(dotnetVersion) SDK'
+  inputs:
+    version: '$(dotnetVersion)'
 
 - script: |
     chmod +x ./bump-version.sh
@@ -29,39 +32,48 @@ steps:
     git tag "releases/$VERSION"
     git push origin "releases/$VERSION"
     echo "##vso[task.setvariable variable=packageVersion]${VERSION}-alpha"
+    echo "##vso[task.setvariable variable=assemblyVersion]${VERSION}.0"
   displayName: 'Bump version'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore'
+  inputs:
+    command: 'restore'
+    projects: 'src/MediatR.AspNetCoreMvc.Helpers.sln'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build'
   inputs:
     command: 'build'
-    projects: 'src/**/*.csproj'
+    projects: 'src/MediatR.AspNetCoreMvc.Helpers.sln'
     arguments: >-
       --configuration $(buildConfiguration)
-      -p:Version=$(packageVersion)
-      -p:AssemblyVersion=$(packageVersion).0
-      -p:FileVersion=$(packageVersion).0
+      --no-restore
       -p:GeneratePackageOnBuild=false
+      -p:Version=$(packageVersion)
+      -p:AssemblyVersion=$(assemblyVersion)
+      -p:FileVersion=$(assemblyVersion)
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack'
   inputs:
     command: 'pack'
-    packagesToPack: 'src/**/*.csproj'
+    packagesToPack: 'src/MediatR.AspNetCoreMvc.Helpers/MediatR.AspNetCoreMvc.Helpers.csproj'
     nobuild: true
     versioningScheme: 'off'
     packDirectory: '$(Build.ArtifactStagingDirectory)'
-    arguments: '-p:PackageVersion=$(packageVersion)'
+    arguments: '--no-build -p:PackageVersion=$(packageVersion)'
 
 - task: PublishPipelineArtifact@1
-  displayName: 'Publish nupkg artifact'
+  displayName: 'Publish artifact'
   inputs:
     targetPath: '$(Build.ArtifactStagingDirectory)'
     artifact: 'nupkg'
 
-- script: |
-    dotnet nuget push "$(Build.ArtifactStagingDirectory)/*.nupkg" \
-      --api-key $(nuget.apiKey) \
-      --source https://api.nuget.org/v3/index.json \
-      --skip-duplicate
+- task: DotNetCoreCLI@2
   displayName: 'Push to NuGet.org'
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'NuGet.org'
