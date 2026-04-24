@@ -70,10 +70,9 @@ steps:
     targetPath: '$(Build.ArtifactStagingDirectory)'
     artifact: 'nupkg'
 
-- task: DotNetCoreCLI@2
+- script: |
+    dotnet nuget push "$(Build.ArtifactStagingDirectory)/*.nupkg" \
+      --api-key $(nuget.apiKey) \
+      --source https://api.nuget.org/v3/index.json \
+      --skip-duplicate
   displayName: 'Push to NuGet.org'
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'NuGet.org'
